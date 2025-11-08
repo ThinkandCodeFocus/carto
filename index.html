@@ -5,212 +5,424 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Cartographie Projets & Rôles — Équipe</title>
 
-  <!-- Bootstrap CDN pour une mise en page simple -->
+  <!-- Bootstrap CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Mermaid for diagrams -->
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-<script>
-  mermaid.initialize({ startOnLoad: true, theme: 'default' });
-</script>
-
-
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ 
+      startOnLoad: true, 
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#4F46E5',
+        primaryTextColor: '#fff',
+        primaryBorderColor: '#4338CA',
+        lineColor: '#6366F1',
+        secondaryColor: '#10B981',
+        tertiaryColor: '#F59E0B',
+        background: '#ffffff',
+        mainBkg: '#EEF2FF',
+        secondBkg: '#DBEAFE',
+        tertiaryBkg: '#FEF3C7',
+        clusterBkg: '#F9FAFB',
+        clusterBorder: '#E5E7EB',
+        fontSize: '14px',
+        fontFamily: 'Inter, system-ui, sans-serif'
+      }
+    });
+  </script>
 
   <style>
-    body { padding-top: 1.5rem; background: #f8f9fa; }
-    .diagram-card { min-height: 420px; }
-    .legend .badge { margin-right: .5rem; }
-    pre.mermaid { background: white; padding: 1rem; border-radius: .5rem; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body { 
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+    
+    .container {
+      max-width: 1400px;
+    }
+    
+    header {
+      text-align: center;
+      color: white;
+      margin-bottom: 2.5rem;
+      animation: fadeInDown 0.8s ease;
+    }
+    
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    header p {
+      font-size: 1.1rem;
+      opacity: 0.95;
+    }
+    
+    .main-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+      animation: fadeInUp 0.8s ease;
+    }
+    
+    .card-header-custom {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .card-header-custom h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0;
+    }
+    
+    .diagram-container {
+      padding: 2rem;
+      background: #f8fafc;
+      overflow-x: auto;
+    }
+    
+    pre.mermaid { 
+      background: transparent !important;
+      padding: 0 !important;
+      border-radius: 0 !important;
+      display: flex;
+      justify-content: center;
+    }
+    
+    .info-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+      background: white;
+    }
+    
+    .info-card {
+      background: linear-gradient(135deg, #f6f8fb 0%, #ffffff 100%);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 2px solid #e5e7eb;
+      transition: all 0.3s ease;
+    }
+    
+    .info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+      border-color: #667eea;
+    }
+    
+    .info-card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #667eea;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .info-card h3::before {
+      content: "▶";
+      font-size: 0.8rem;
+    }
+    
+    .info-card ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .info-card li {
+      padding: 0.5rem 0;
+      color: #4b5563;
+      font-size: 0.95rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .info-card li:last-child {
+      border-bottom: none;
+    }
+    
+    .badge-custom {
+      display: inline-block;
+      padding: 0.35rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .badge-phase1 { background: #DBEAFE; color: #1E40AF; }
+    .badge-phase2 { background: #D1FAE5; color: #065F46; }
+    .badge-tech { background: #FEF3C7; color: #92400E; }
+    .badge-team { background: #FCE7F3; color: #9F1239; }
+    
+    .btn-export {
+      background: white;
+      color: #667eea;
+      border: 2px solid white;
+      padding: 0.6rem 1.5rem;
+      border-radius: 25px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .btn-export:hover {
+      background: #667eea;
+      color: white;
+      transform: scale(1.05);
+    }
+    
+    .legend-box {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem;
+      border: 2px solid #e5e7eb;
+    }
+    
+    .legend-box h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 1rem;
+    }
+    
+    footer {
+      text-align: center;
+      color: white;
+      margin-top: 3rem;
+      padding: 1.5rem;
+      opacity: 0.9;
+      font-size: 0.95rem;
+    }
+    
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
     @media (max-width: 768px) {
-      .diagram-card { min-height: 520px; }
+      header h1 { font-size: 1.8rem; }
+      .diagram-container { padding: 1rem; }
+      .info-cards { grid-template-columns: 1fr; padding: 1rem; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <header class="mb-4">
-      <h1 class="h3">Cartographie : Projets & responsabilités</h1>
-      <p class="text-muted">Diagramme clair des projets, technologies et qui fait quoi — version partagée pour toute l'équipe.</p>
+    <header>
+      <h1> Roadmap Projets Équipe - Think & Code</h1>
+      <p>Vue d'ensemble des projets, technologies et responsabilités</p>
     </header>
 
-    <div class="row g-3">
-      <div class="col-lg-8">
-        <div class="card shadow-sm diagram-card">
-          <div class="card-body">
-            <h2 class="h5">Schéma global (cliquez pour agrandir)</h2>
-            <!-- Mermaid diagram: phase 1 (parallèle) => phase 2 (parallèle) -->
-            <div class="mt-3">
-              <pre class="mermaid">
-flowchart TB
-  %% Phases
-  subgraph Phase1["Phase 1 — En parallèle"]
-    direction TB
-    XALASS["Xalass"]
-    BOURSECURE["Projet Boursecure"]
-    TEXP["T-Express"]
-    HACK["Hackaton (Senegal Sante Connect)"]
-  end
 
-  subgraph Phase2["Phase 2 — En parallèle (après Phase 1)"]
-    direction TB
-    CERTIF["Plateforme de certification"]
-    BONCOIN["Le BonCoin"]
-  end
-
-  subgraph FUTUR["Les autres (à voir après)"]
-    direction TB
-    AUTRES["Autres ..."]
-  end
-
-  %% Relations temporelles (Phase1 -> Phase2)
-  XALASS -->|Fin Phase1| CERTIF
-  BOURSECURE -->|Fin Phase1| CERTIF
-  TEXP -->|Fin Phase1| CERTIF
-  HACK -->|Fin Phase1| CERTIF
-
-  XALASS -->|Fin Phase1| BONCOIN
-  BOURSECURE -->|Fin Phase1| BONCOIN
-  TEXP -->|Fin Phase1| BONCOIN
-  HACK -->|Fin Phase1| BONCOIN
-
-  CERTIF --> AUTRES
-  BONCOIN --> AUTRES
-
-  %% Détails internes - Xalass
-  subgraph XALASS_details["Xalass"]
-    direction LR
-    XAL_TECH["Flutter • Laravel"]
-    XAL_TEAM["Mame Goumba (Flutter), Ndieye (V2 Flutter), Mbaye (Laravel)"]
-    XAL_REC["Recommandation: Wone & Ndieye"]
-  end
-  XALASS --- XALASS_details
-
-  %% Détails - Boursecure
-  subgraph BOURSECURE_details["Boursecure (Retrait bourse Sesapay)"]
-    direction LR
-    BOUR_TECH["Next.js • Supabase"]
-    BOUR_TEAM["Mame Goumaba, Mbaye, Babacar"]
-    BOUR_CHAT["Chatbot: Wone"]
-  end
-  BOURSECURE --- BOURSECURE_details
-
-  %% Détails - T-Express
-  subgraph TEXP_details["T-Express"]
-    direction LR
-    TEX_TECH["Next.js • Laravel"]
-    TEX_TEAM["Babacar (Next.js), Mbaye (Laravel)"]
-    TEX_REC["Recommandation: Wone"]
-    TEX_CHAT["Chatbot: Ndieye"]
-  end
-  TEXP --- TEXP_details
-
-  %% Détails - Hackaton (Senegal sante Connect)
-  subgraph HACK_details["Hackaton (Senegal Sante Connect)"]
-    direction LR
-    HACK_TECH["Bootstrap • Firebase"]
-    HACK_TEAM["Babacar & Mbaye (front/back)"]
-    HACK_AI["IA: Wone (2 chatbots), Ndieye (reco patient), Fatima (alerte ONG)"]
-  end
-  HACK --- HACK_details
-
-  %% Détails - Le BonCoin
-  subgraph BON_details["Le BonCoin (plateforme)"]
-    direction LR
-    BON_TECH["Angular • Go"]
-    BON_TEAM["Mame Goumba & Ndieye (Angular), Mbaye & Babacar (Go)"]
-    BON_AI["IA (Q&A plateforme): Wone & Ndieye"]
-  end
-  BONCOIN --- BON_details
-
-  %% Détails - Plateforme de certification
-  subgraph CERT_details["Plateforme de certification"]
-    direction LR
-    CERT_TECH["Next.js • Go"]
-    CERT_TEAM["Mbaye & Ndieye (Next.js), Mame Goumba & Babacar (Go)"]
-    CERT_MATCH["Matching: Ndieye & Wone"]
-  end
-  CERTIF --- CERT_details
-
-  %% styling nodes
-  classDef proj fill:#dfefff,stroke:#2b6cb0,stroke-width:1px;
-  class XALASS,BOURSECURE,TEXP,HACK,CERTIF,BONCOIN proj;
-  class XALASS_details,BOURSECURE_details,TEXP_details,HACK_details,BON_details,CERT_details fill:#ffffff,stroke:#888,stroke-dasharray: 3 2;
-              </pre>
-            </div>
-
-            <div class="mt-3">
-              <button id="btnExportSvg" class="btn btn-outline-primary btn-sm">Exporter le diagramme en SVG</button>
-              <small class="text-muted ms-2">(ouvre dans un nouvel onglet)</small>
-            </div>
-
-          </div>
-        </div>
+    <div class="main-card">
+      <div class="card-header-custom">
+        <h2>📊 Planification des Phases</h2>
+        <button id="btnExportSvg" class="btn-export">📥 Exporter SVG</button>
       </div>
-
-      <div class="col-lg-4">
-        <div class="card shadow-sm mb-3">
-          <div class="card-body">
-            <h3 class="h6">Légende</h3>
-            <div class="legend mb-2">
-              <span class="badge bg-info text-dark">Phase 1</span>
-              <span class="badge bg-warning text-dark">Phase 2</span>
-              <span class="badge bg-secondary">Tech / Stack</span>
-              <span class="badge bg-light text-dark">Rôles / Personnes</span>
-            </div>
-            <p class="small text-muted">
-              Les projets Xalass, Boursecure, T-Express et Hackaton sont prévus en parallèle (Phase 1).
-              Après leur livraison, la Plateforme de certification et Le BonCoin seront traités en parallèle (Phase 2).
-              <br><strong>Les autres</strong> : à planifier ensuite.
-            </p>
-          </div>
+      
+      <div class="diagram-container">
+        <pre class="mermaid">
+graph TB
+    subgraph Phase1[" PHASE 1 — En Parallèle"]
+        style Phase1 fill:#EEF2FF,stroke:#4F46E5,stroke-width:3px,color:#1E1B4B
+        
+        XALASS["<b>📱 Xalass</b><br/><br/>🛠 Flutter + Laravel<br/>━━━━━━━━━━━<br/>👥 <b>Dev:</b><br/>• Mame Goumba (Flutter)<br/>• Ndieye (Flutter V2)<br/>• Mbaye (Laravel)<br/>━━━━━━━━━━━<br/>🤖 <b>IA:</b> Wone & Ndieye<br/>(Recommandations)"]
+        
+        BOURSE["<b>💰 Boursecure</b><br/><br/>🛠 Next.js + Supabase<br/>━━━━━━━━━━━<br/>👥 <b>Dev:</b><br/>• Mame Goumaba<br/>• Mbaye<br/>• Babacar<br/>━━━━━━━━━━━<br/>🤖 <b>Chatbot:</b> Wone"]
+        
+        TEXP["<b>🚄 T-Express</b><br/><br/>🛠 Next.js + Laravel<br/>━━━━━━━━━━━<br/>👥 <b>Dev:</b><br/>• Babacar (Next.js)<br/>• Mbaye (Laravel)<br/>━━━━━━━━━━━<br/>🤖 <b>IA:</b><br/>• Reco: Wone<br/>• Chatbot: Ndieye"]
+        
+        HACK["<b>🏥 Hackaton</b><br/><b>Senegal Sante Connect</b><br/><br/>🛠 Bootstrap + Firebase<br/>━━━━━━━━━━━<br/>👥 <b>Dev:</b><br/>• Babacar<br/>• Mbaye<br/>━━━━━━━━━━━<br/>🤖 <b>IA:</b><br/>• Wone (2 Chatbots)<br/>• Ndieye (Reco Patient)<br/>• Fatima (Alertes ONG)"]
+    end
+    
+    subgraph Phase2[" PHASE 2 — Après Phase 1"]
+        style Phase2 fill:#D1FAE5,stroke:#10B981,stroke-width:3px,color:#064E3B
+        
+        CERTIF["<b>🎓 Certification</b><br/><br/>🛠 Next.js + Go<br/>━━━━━━━━━━━<br/>👥 <b>Dev:</b><br/>• Mbaye (Next.js)<br/>• Ndieye (Next.js)<br/>• Mame Goumba (Go)<br/>• Babacar (Go)<br/>━━━━━━━━━━━<br/>🤖 <b>Matching:</b><br/>Ndieye & Wone"]
+        
+        BONCOIN["<b>🛒 Le BonCoin</b><br/><br/>🛠 Angular + Go<br/>━━━━━━━━━━━<br/>👥 <b>Dev:</b><br/>• Mame Goumba (Angular)<br/>• Ndieye (Angular)<br/>• Mbaye (Go)<br/>• Babacar (Go)<br/>━━━━━━━━━━━<br/>🤖 <b>IA Q&A:</b><br/>Wone & Ndieye<br/>(GPT pour la plateforme)"]
+    end
+    
+    subgraph Phase3["🔮 PHASE 3 — À Planifier"]
+        style Phase3 fill:#FEF3C7,stroke:#F59E0B,stroke-width:3px,color:#78350F
+        
+        AUTRES["<b>📋 Autres Projets</b><br/><br/>À définir ultérieurement"]
+    end
+    
+    %% Connections Phase 1 vers Phase 2
+    XALASS -.->|Fin Phase 1| CERTIF
+    BOURSE -.->|Fin Phase 1| CERTIF
+    TEXP -.->|Fin Phase 1| CERTIF
+    HACK -.->|Fin Phase 1| CERTIF
+    
+    XALASS -.->|Fin Phase 1| BONCOIN
+    BOURSE -.->|Fin Phase 1| BONCOIN
+    TEXP -.->|Fin Phase 1| BONCOIN
+    HACK -.->|Fin Phase 1| BONCOIN
+    
+    %% Connections Phase 2 vers Phase 3
+    CERTIF ==>|Fin Phase 2| AUTRES
+    BONCOIN ==>|Fin Phase 2| AUTRES
+    
+    %% Styles des nœuds
+    style XALASS fill:#DBEAFE,stroke:#1E40AF,stroke-width:2px,color:#1E3A8A
+    style BOURSE fill:#DBEAFE,stroke:#1E40AF,stroke-width:2px,color:#1E3A8A
+    style TEXP fill:#DBEAFE,stroke:#1E40AF,stroke-width:2px,color:#1E3A8A
+    style HACK fill:#DBEAFE,stroke:#1E40AF,stroke-width:2px,color:#1E3A8A
+    
+    style CERTIF fill:#A7F3D0,stroke:#065F46,stroke-width:2px,color:#064E3B
+    style BONCOIN fill:#A7F3D0,stroke:#065F46,stroke-width:2px,color:#064E3B
+    
+    style AUTRES fill:#FDE68A,stroke:#92400E,stroke-width:2px,color:#78350F
+        </pre>
+      </div>
+      
+      <div class="legend-box">
+        <h3>📌 Légende</h3>
+        <div>
+          <span class="badge-custom badge-phase1">🔵 Phase 1 - Projets actuels (en parallèle)</span>
+          <span class="badge-custom badge-phase2">🟢 Phase 2 - Après Phase 1 (en parallèle)</span>
+          <span class="badge-custom badge-tech">🟡 Phase 3 - Projets futurs</span>
         </div>
-
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <h3 class="h6">Récapitulatif rapide</h3>
-            <ul class="list-unstyled small">
-              <li><strong>Hackaton (Senegal Sante Connect)</strong> — Bootstrap + Firebase — Babacar, Mbaye. IA : Wone, Ndieye, Fatima.</li>
-              <li class="mt-2"><strong>Boursecure</strong> — Next.js + Supabase — Mame Goumaba, Mbaye, Babacar. Chatbot : Wone.</li>
-              <li class="mt-2"><strong>Xalass</strong> — Flutter & Laravel — Mame Goumba, Ndieye (V2), Mbaye. Reco : Wone & Ndieye.</li>
-              <li class="mt-2"><strong>T-Express</strong> — Next.js & Laravel — Babacar, Mbaye. Reco : Wone. Chatbot : Ndieye.</li>
-              <li class="mt-2"><strong>Le BonCoin</strong> — Angular & Go — Mame Goumba, Ndieye, Mbaye, Babacar. IA Q&A : Wone & Ndieye.</li>
-              <li class="mt-2"><strong>Plateforme certification</strong> — Next.js & Go — Mbaye, Ndieye, Mame Goumba, Babacar. Matching : Ndieye & Wone.</li>
-            </ul>
-          </div>
+        <p style="margin-top: 1rem; color: #6b7280; font-size: 0.9rem;">
+          <strong>Flux de travail :</strong> Les 4 projets de Phase 1 sont développés simultanément. 
+          Une fois terminés, l'équipe passe à Phase 2 avec 2 projets en parallèle, puis aux projets suivants.
+        </p>
+      </div>
+      
+      <div class="info-cards">
+        <div class="info-card">
+          <h3>Phase 1 - Priorité Immédiate</h3>
+          <ul>
+            <li><strong>📱 Xalass</strong> - App mobile moderne</li>
+            <li><strong>💰 Boursecure</strong> - Gestion bourses</li>
+            <li><strong>🚄 T-Express</strong> - Plateforme transport</li>
+            <li><strong>🏥 Hackaton</strong> - Santé connectée</li>
+          </ul>
         </div>
-
+        
+        <div class="info-card">
+          <h3>Phase 2 - Après Phase 1</h3>
+          <ul>
+            <li><strong>🎓 Certification</strong> - Plateforme matching</li>
+            <li><strong>🛒 Le BonCoin</strong> - Marketplace avec IA</li>
+          </ul>
+        </div>
+        
+        <div class="info-card">
+          <h3>Technologies Principales</h3>
+          <ul>
+            <li><strong>Frontend:</strong> Flutter, Next.js, Angular</li>
+            <li><strong>Backend:</strong> Laravel, Go, Supabase, Firebase</li>
+            <li><strong>IA:</strong> Chatbots, Recommandations, Q&A</li>
+          </ul>
+        </div>
+        
+        <div class="info-card">
+          <h3>Équipe Complète</h3>
+          <ul>
+            <li><strong>Dev:</strong> Mame Goumba, Ndieye, Mbaye, Babacar</li>
+            <li><strong>IA:</strong> Wone, Ndieye, Fatima</li>
+            <li><strong>Total:</strong> 6 membres actifs</li>
+          </ul>
+        </div>
       </div>
     </div>
 
-    <footer class="mt-4 mb-5 text-center small text-muted">
-      Généré automatiquement — modifiable. Si tu veux une version imprimable / PPT ou un schéma interactif plus avancé (drag & drop), je peux te fournir le code adapté.
+
+    <footer>
+      <p>✨ Dernière mise à jour : Novembre 2025 | Créé avec pour l'équipe</p>
+      <p style="margin-top: 0.5rem; font-size: 0.85rem;">
+        💡 Besoin d'un export PowerPoint ? Contactez l'équipe !
+      </p>
     </footer>
   </div>
 
-  <!-- Small script: export mermaid SVG -->
   <script>
+    // Export SVG functionality
     async function getMermaidSvgElement() {
-      // Mermaid injecte des <svg> dans des <div class="mermaid"> après rendu
-      // Cherche premier SVG dans la page
       const svg = document.querySelector('.mermaid svg');
       return svg;
     }
 
     document.getElementById('btnExportSvg').addEventListener('click', async () => {
-      const svg = await getMermaidSvgElement();
-      if (!svg) {
-        alert('SVG non trouvé. Assure-toi que le diagramme est chargé.');
-        return;
+      try {
+        const svg = await getMermaidSvgElement();
+        if (!svg) {
+          alert('⚠️ SVG non trouvé. Patientez que le diagramme se charge complètement.');
+          return;
+        }
+        
+        // Clone et optimise le SVG
+        const clonedSvg = svg.cloneNode(true);
+        clonedSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        
+        const serializer = new XMLSerializer();
+        const svgStr = serializer.serializeToString(clonedSvg);
+        const blob = new Blob([svgStr], {type: 'image/svg+xml;charset=utf-8'});
+        const url = URL.createObjectURL(blob);
+        
+        // Ouvre dans un nouvel onglet
+        const newWindow = window.open(url, '_blank');
+        if (newWindow) {
+          setTimeout(() => URL.revokeObjectURL(url), 100);
+        } else {
+          alert('❌ Impossible d\'ouvrir une nouvelle fenêtre. Vérifiez vos paramètres de blocage de pop-up.');
+        }
+      } catch (error) {
+        console.error('Erreur lors de l\'export:', error);
+        alert('❌ Une erreur est survenue lors de l\'export du diagramme.');
       }
-      const serializer = new XMLSerializer();
-      const svgStr = serializer.serializeToString(svg);
-      const blob = new Blob([svgStr], {type: 'image/svg+xml;charset=utf-8'});
-      const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
+    });
+
+    // Animation au chargement
+    window.addEventListener('load', () => {
+      console.log('✅ Diagramme chargé avec succès !');
     });
   </script>
 
-  <!-- bootstrap bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
