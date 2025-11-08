@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cartographie Projets & Rôles — Équipe</title>
+
+  <!-- Bootstrap CDN pour une mise en page simple -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Mermaid for diagrams -->
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'base', securityLevel: 'loose' });
+  </script>
+
+  <style>
+    body { padding-top: 1.5rem; background: #f8f9fa; }
+    .diagram-card { min-height: 420px; }
+    .legend .badge { margin-right: .5rem; }
+    pre.mermaid { background: white; padding: 1rem; border-radius: .5rem; }
+    @media (max-width: 768px) {
+      .diagram-card { min-height: 520px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="mb-4">
+      <h1 class="h3">Cartographie : Projets & responsabilités</h1>
+      <p class="text-muted">Diagramme clair des projets, technologies et qui fait quoi — version partagée pour toute l'équipe.</p>
+    </header>
+
+    <div class="row g-3">
+      <div class="col-lg-8">
+        <div class="card shadow-sm diagram-card">
+          <div class="card-body">
+            <h2 class="h5">Schéma global (cliquez pour agrandir)</h2>
+            <!-- Mermaid diagram: phase 1 (parallèle) => phase 2 (parallèle) -->
+            <div class="mt-3">
+              <pre class="mermaid">
+flowchart TB
+  %% Phases
+  subgraph Phase1["Phase 1 — En parallèle"]
+    direction TB
+    XALASS["Xalass"]
+    BOURSECURE["Projet Boursecure"]
+    TEXP["T-Express"]
+    HACK["Hackaton (Senegal Sante Connect)"]
+  end
+
+  subgraph Phase2["Phase 2 — En parallèle (après Phase 1)"]
+    direction TB
+    CERTIF["Plateforme de certification"]
+    BONCOIN["Le BonCoin"]
+  end
+
+  subgraph FUTUR["Les autres (à voir après)"]
+    direction TB
+    AUTRES["Autres ..."]
+  end
+
+  %% Relations temporelles (Phase1 -> Phase2)
+  XALASS -->|Fin Phase1| CERTIF
+  BOURSECURE -->|Fin Phase1| CERTIF
+  TEXP -->|Fin Phase1| CERTIF
+  HACK -->|Fin Phase1| CERTIF
+
+  XALASS -->|Fin Phase1| BONCOIN
+  BOURSECURE -->|Fin Phase1| BONCOIN
+  TEXP -->|Fin Phase1| BONCOIN
+  HACK -->|Fin Phase1| BONCOIN
+
+  CERTIF --> AUTRES
+  BONCOIN --> AUTRES
+
+  %% Détails internes - Xalass
+  subgraph XALASS_details["Xalass"]
+    direction LR
+    XAL_TECH["Flutter • Laravel"]
+    XAL_TEAM["Mame Goumba (Flutter), Ndieye (V2 Flutter), Mbaye (Laravel)"]
+    XAL_REC["Recommandation: Wone & Ndieye"]
+  end
+  XALASS --- XALASS_details
+
+  %% Détails - Boursecure
+  subgraph BOURSECURE_details["Boursecure (Retrait bourse Sesapay)"]
+    direction LR
+    BOUR_TECH["Next.js • Supabase"]
+    BOUR_TEAM["Mame Goumaba, Mbaye, Babacar"]
+    BOUR_CHAT["Chatbot: Wone"]
+  end
+  BOURSECURE --- BOURSECURE_details
+
+  %% Détails - T-Express
+  subgraph TEXP_details["T-Express"]
+    direction LR
+    TEX_TECH["Next.js • Laravel"]
+    TEX_TEAM["Babacar (Next.js), Mbaye (Laravel)"]
+    TEX_REC["Recommandation: Wone"]
+    TEX_CHAT["Chatbot: Ndieye"]
+  end
+  TEXP --- TEXP_details
+
+  %% Détails - Hackaton (Senegal sante Connect)
+  subgraph HACK_details["Hackaton (Senegal Sante Connect)"]
+    direction LR
+    HACK_TECH["Bootstrap • Firebase"]
+    HACK_TEAM["Babacar & Mbaye (front/back)"]
+    HACK_AI["IA: Wone (2 chatbots), Ndieye (reco patient), Fatima (alerte ONG)"]
+  end
+  HACK --- HACK_details
+
+  %% Détails - Le BonCoin
+  subgraph BON_details["Le BonCoin (plateforme)"]
+    direction LR
+    BON_TECH["Angular • Go"]
+    BON_TEAM["Mame Goumba & Ndieye (Angular), Mbaye & Babacar (Go)"]
+    BON_AI["IA (Q&A plateforme): Wone & Ndieye"]
+  end
+  BONCOIN --- BON_details
+
+  %% Détails - Plateforme de certification
+  subgraph CERT_details["Plateforme de certification"]
+    direction LR
+    CERT_TECH["Next.js • Go"]
+    CERT_TEAM["Mbaye & Ndieye (Next.js), Mame Goumba & Babacar (Go)"]
+    CERT_MATCH["Matching: Ndieye & Wone"]
+  end
+  CERTIF --- CERT_details
+
+  %% styling nodes
+  classDef proj fill:#dfefff,stroke:#2b6cb0,stroke-width:1px;
+  class XALASS,BOURSECURE,TEXP,HACK,CERTIF,BONCOIN proj;
+  class XALASS_details,BOURSECURE_details,TEXP_details,HACK_details,BON_details,CERT_details fill:#ffffff,stroke:#888,stroke-dasharray: 3 2;
+              </pre>
+            </div>
+
+            <div class="mt-3">
+              <button id="btnExportSvg" class="btn btn-outline-primary btn-sm">Exporter le diagramme en SVG</button>
+              <small class="text-muted ms-2">(ouvre dans un nouvel onglet)</small>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <h3 class="h6">Légende</h3>
+            <div class="legend mb-2">
+              <span class="badge bg-info text-dark">Phase 1</span>
+              <span class="badge bg-warning text-dark">Phase 2</span>
+              <span class="badge bg-secondary">Tech / Stack</span>
+              <span class="badge bg-light text-dark">Rôles / Personnes</span>
+            </div>
+            <p class="small text-muted">
+              Les projets Xalass, Boursecure, T-Express et Hackaton sont prévus en parallèle (Phase 1).
+              Après leur livraison, la Plateforme de certification et Le BonCoin seront traités en parallèle (Phase 2).
+              <br><strong>Les autres</strong> : à planifier ensuite.
+            </p>
+          </div>
+        </div>
+
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h3 class="h6">Récapitulatif rapide</h3>
+            <ul class="list-unstyled small">
+              <li><strong>Hackaton (Senegal Sante Connect)</strong> — Bootstrap + Firebase — Babacar, Mbaye. IA : Wone, Ndieye, Fatima.</li>
+              <li class="mt-2"><strong>Boursecure</strong> — Next.js + Supabase — Mame Goumaba, Mbaye, Babacar. Chatbot : Wone.</li>
+              <li class="mt-2"><strong>Xalass</strong> — Flutter & Laravel — Mame Goumba, Ndieye (V2), Mbaye. Reco : Wone & Ndieye.</li>
+              <li class="mt-2"><strong>T-Express</strong> — Next.js & Laravel — Babacar, Mbaye. Reco : Wone. Chatbot : Ndieye.</li>
+              <li class="mt-2"><strong>Le BonCoin</strong> — Angular & Go — Mame Goumba, Ndieye, Mbaye, Babacar. IA Q&A : Wone & Ndieye.</li>
+              <li class="mt-2"><strong>Plateforme certification</strong> — Next.js & Go — Mbaye, Ndieye, Mame Goumba, Babacar. Matching : Ndieye & Wone.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <footer class="mt-4 mb-5 text-center small text-muted">
+      Généré automatiquement — modifiable. Si tu veux une version imprimable / PPT ou un schéma interactif plus avancé (drag & drop), je peux te fournir le code adapté.
+    </footer>
+  </div>
+
+  <!-- Small script: export mermaid SVG -->
+  <script>
+    async function getMermaidSvgElement() {
+      // Mermaid injecte des <svg> dans des <div class="mermaid"> après rendu
+      // Cherche premier SVG dans la page
+      const svg = document.querySelector('.mermaid svg');
+      return svg;
+    }
+
+    document.getElementById('btnExportSvg').addEventListener('click', async () => {
+      const svg = await getMermaidSvgElement();
+      if (!svg) {
+        alert('SVG non trouvé. Assure-toi que le diagramme est chargé.');
+        return;
+      }
+      const serializer = new XMLSerializer();
+      const svgStr = serializer.serializeToString(svg);
+      const blob = new Blob([svgStr], {type: 'image/svg+xml;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    });
+  </script>
+
+  <!-- bootstrap bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
